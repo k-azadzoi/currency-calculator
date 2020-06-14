@@ -7,6 +7,10 @@ const API_URL = 'https://api.exchangeratesapi.io/latest'
 
 const App = () => {
 
+  const [currencyOptions, setCurrencyOptions] = useState([])
+  const [fromCurrency, setFromCurrency] = useState()
+  const [toCurrency, setToCurrency] = useState()
+
   useEffect(() => {
     fetch(API_URL)
       .then((response) =>{
@@ -20,7 +24,10 @@ const App = () => {
       })
       .then(response => response.json())
       .then((data) => {
-        console.log(data)
+        const usCurrency = Object.keys(data.rates)[26]
+        setCurrencyOptions([data.base, ...Object.keys(data.rates)])
+        setFromCurrency(data.base)
+        setToCurrency(usCurrency)
       })
   },[])
 
@@ -32,9 +39,17 @@ const App = () => {
             <h1>Currency Conversion </h1>
           </div>
             <div className='flex flex-wrap flex-row m-2 border border-orange-500'>
-              <CurrencyRow />
+              <CurrencyRow 
+                currencyOptions={currencyOptions}
+                selectedCurrency={fromCurrency}
+                handleCurrencyChange={e => setFromCurrency(e.target.value)}
+              />
               <div className='font-bold text-3xl'>=</div>
-              <CurrencyRow />
+              <CurrencyRow 
+                currencyOptions={currencyOptions}
+                selectedCurrency={toCurrency}
+                handleCurrencyChange={e => setToCurrency(e.target.value)}
+              />
             </div>
             <h2 className='text-gray-900 text-left border border-blue-500'>Exchange Rate</h2>
         </div>
