@@ -10,6 +10,18 @@ const App = () => {
   const [currencyOptions, setCurrencyOptions] = useState([])
   const [fromCurrency, setFromCurrency] = useState()
   const [toCurrency, setToCurrency] = useState()
+  const [exchangeRate, setExchangeRate] = useState(0)
+  const [amount, setAmount] = useState(1)
+  const [amountFromCurrency, setAmountFromCurrency] = useState(true)
+
+  let toAmount, fromAmount
+  if (amountFromCurrency){
+    fromAmount = amount
+    toAmount = amount * exchangeRate
+  } else {
+    toAmount = amount
+    fromAmount = amount / exchangeRate
+  }
 
   useEffect(() => {
     fetch(API_URL)
@@ -26,10 +38,41 @@ const App = () => {
       .then((data) => {
         const usCurrency = Object.keys(data.rates)[26]
         setCurrencyOptions([data.base, ...Object.keys(data.rates)])
+        setExchangeRate(data.rates[usCurrency])
         setFromCurrency(data.base)
         setToCurrency(usCurrency)
       })
   },[])
+
+  useEffect(() => {
+    if (fromCurrency != null && toCurrency !=null){
+      fetch(`${API_URL}?base=${fromCurrency}&symbols=${toCurrency}`)
+      .then((response) =>{
+        if(response.ok){
+          return response
+        } else {
+          let errorMessage = `${response.status} ${response.statusText}`,
+            error = new Error(errorMessage)
+            throw (error)
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        setExchangeRate(data.rates[toCurrency])
+      })
+    }
+
+  },[fromCurrency, toCurrency])
+
+  const handleFromAmountChange = (e) => {
+    setAmount(e.target.value)
+    setAmountFromCurrency(true)
+  }
+
+  const handleToAmountChange = (e) => {
+    setAmount(e.target.value)
+    setAmountFromCurrency(false)
+  }
 
   return (
     <>  
@@ -43,12 +86,16 @@ const App = () => {
                 currencyOptions={currencyOptions}
                 selectedCurrency={fromCurrency}
                 handleCurrencyChange={e => setFromCurrency(e.target.value)}
+                amount={fromAmount}
+                onChangeAmount={handleFromAmountChange}
               />
               <div className='font-bold text-3xl'>=</div>
               <CurrencyRow 
                 currencyOptions={currencyOptions}
                 selectedCurrency={toCurrency}
                 handleCurrencyChange={e => setToCurrency(e.target.value)}
+                amount={toAmount}
+                onChangeAmount={handleToAmountChange}
               />
             </div>
             <h2 className='text-gray-900 text-left border border-blue-500'>Exchange Rate</h2>
