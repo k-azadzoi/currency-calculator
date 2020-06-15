@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import './App.css'
+import { Switch, Route, Link } from 'react-router-dom'
 import './styles/app.css'
 import CurrencyRow from './components/CurrencyRow'
+import { BsArrowUpDown } from "react-icons/bs";
+import Nav from './components/Nav'
 
 const API_URL = 'https://api.exchangeratesapi.io/latest'
 
@@ -75,13 +77,13 @@ const App = () => {
   }
 
   return (
-    <>  
-      <div className='flex flex-col justify-center items-center text-center min-h-screen text-gray-900'>
-        <div className='border border-red-500 p-20 bg-gray-100 rounded-lg'>
-          <div  className='m-5 border border-purple-500'>
-            <h1>Currency Conversion </h1>
-          </div>
-            <div className='flex flex-wrap flex-row m-2 border border-orange-500'>
+    <> 
+      <Switch>
+        <div className='flex flex-wrap justify-center items-center text-center min-h-screen text-gray-900'>
+          <div className='sm:w-auto md:w-1/4 pb-10 m-5 bg-gray-100 font-medium rounded-md'>
+            <Nav />
+            <div className='m-2 py-5'>
+              From
               <CurrencyRow 
                 currencyOptions={currencyOptions}
                 selectedCurrency={fromCurrency}
@@ -89,7 +91,8 @@ const App = () => {
                 amount={fromAmount}
                 onChangeAmount={handleFromAmountChange}
               />
-              <div className='font-bold text-3xl'>=</div>
+              <div className='my-2 py-2'><BsArrowUpDown className='text-3xl m-auto'/></div>
+              To
               <CurrencyRow 
                 currencyOptions={currencyOptions}
                 selectedCurrency={toCurrency}
@@ -98,9 +101,9 @@ const App = () => {
                 onChangeAmount={handleToAmountChange}
               />
             </div>
-            <h2 className='text-gray-900 text-left border border-blue-500'>Exchange Rate</h2>
+          </div>
         </div>
-      </div>
+      </Switch>
     </>
   );
 }

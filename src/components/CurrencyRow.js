@@ -6,18 +6,16 @@ const CurrencyRow = (props) => {
 
     return (
         <>
-        <div>
-            <div className='flex flex-wrap m-2 rounded-md'>
-                <input className='border-2 border-gray-800 rounded-md p-1 w-24' type='number' value={amount} onChange={onChangeAmount}/>
-                <select className='border border-green-500 ml-2' value={selectedCurrency} onChange={handleCurrencyChange}>
-                    {
-                        currencyOptions.map((option) => (
-                            <option key={option} value={option}> {option} </option>
-                        ))
-                    }
-                </select>
+            <div className='flex flex-wrap m-2 rounded-md justify-center'>
+                <input className='border-2 border-gray-800 rounded-md p-2 w-24' type='number' value={amount} onChange={onChangeAmount}/>
+                    <select className='block bg-white hover:border-gray-500 mx-2 px-2 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline' value={selectedCurrency} onChange={handleCurrencyChange}>
+                        {
+                            currencyOptions.map((option) => (
+                                <option key={option} value={option}> {option} </option>
+                            ))
+                        }
+                    </select>
             </div>
-        </div>
         </>
     )
 }
