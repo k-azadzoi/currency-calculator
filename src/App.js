@@ -41,8 +41,8 @@ const App = () => {
         const usCurrency = Object.keys(data.rates)[26]
         setCurrencyOptions([data.base, ...Object.keys(data.rates)])
         setExchangeRate(data.rates[usCurrency])
-        setFromCurrency(data.base)
-        setToCurrency(usCurrency)
+        setFromCurrency(usCurrency)
+        setToCurrency(data.base)
       })
   },[])
 
@@ -60,7 +60,7 @@ const App = () => {
       })
       .then(response => response.json())
       .then(data => {
-        setExchangeRate(data.rates[toCurrency])
+        setExchangeRate(data.rates[toCurrency].toFixed(3))
       })
     }
 
@@ -75,6 +75,15 @@ const App = () => {
     setAmount(e.target.value)
     setAmountFromCurrency(false)
   }
+
+  const handleSwap = (e) => {
+    e.preventDefault()
+
+    setToCurrency(fromCurrency)
+    setFromCurrency(toCurrency)
+
+  }
+
 
   return (
     <> 
@@ -91,7 +100,7 @@ const App = () => {
                 amount={fromAmount}
                 onChangeAmount={handleFromAmountChange}
               />
-              <div className='my-2 py-2'><BsArrowUpDown className='text-3xl m-auto'/></div>
+              <div className='w-full my-2 py-2'><BsArrowUpDown  onClick={handleSwap} className='text-3xl m-auto'/></div>
               To
               <CurrencyRow 
                 currencyOptions={currencyOptions}
@@ -101,6 +110,7 @@ const App = () => {
                 onChangeAmount={handleToAmountChange}
               />
             </div>
+              <p className='text-gray-600'>{amount} {fromCurrency} = {exchangeRate} {toCurrency} </p>
           </div>
         </div>
       </Switch>
