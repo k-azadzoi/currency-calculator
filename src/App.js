@@ -22,7 +22,7 @@ const App = () => {
     toAmount = amount * exchangeRate
   } else {
     toAmount = amount
-    fromAmount = amount / exchangeRate
+    fromAmount = (amount / exchangeRate).toFixed(2)
   }
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const App = () => {
       })
       .then(response => response.json())
       .then(data => {
-        setExchangeRate(data.rates[toCurrency].toFixed(3))
+        setExchangeRate(data.rates[toCurrency].toFixed(2))
       })
     }
 
@@ -84,7 +84,7 @@ const App = () => {
 
   }
 
-
+  let currentRate = `${parseFloat(fromAmount).toFixed(2)} ${fromCurrency} = ${parseFloat(toAmount).toFixed(2)} ${toCurrency}`
   return (
     <> 
       <Switch>
@@ -100,7 +100,7 @@ const App = () => {
                 amount={fromAmount}
                 onChangeAmount={handleFromAmountChange}
               />
-              <div className='w-full my-2 py-2'><BsArrowUpDown  onClick={handleSwap} className='text-3xl m-auto'/></div>
+              <div className='w-full my-2 py-2'><BsArrowUpDown onClick={handleSwap} className='text-3xl m-auto hover:opacity-50'/></div>
               To
               <CurrencyRow 
                 currencyOptions={currencyOptions}
@@ -110,7 +110,9 @@ const App = () => {
                 onChangeAmount={handleToAmountChange}
               />
             </div>
-              <p className='text-gray-600'>{amount} {fromCurrency} = {exchangeRate} {toCurrency} </p>
+              <p className='text-gray-600'>
+                 {currentRate}
+              </p>
           </div>
         </div>
       </Switch>
